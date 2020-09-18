@@ -13,14 +13,13 @@ import SwiftUI
 struct ListView: View {
   @EnvironmentObject var appData: AppData
   @State private var selectedLink: UUID? = nil
-  
-  private let monoLight: String = "SFMono-Light.otf"
-  private let lightFont: String = "Avenir Next Ultra Light"
+
   private let regrFont: String  = "Avenir Next Regular"
-  private let condLight: String = "Avenir Next Condensed Ultra Light"
   private let bgColor : String  = "BackgroundColor"
   private let fntSize:  CGFloat = 20
-  private let rowHgt:   CGFloat = 40
+  private let rowHgt:   CGFloat = 48
+  private let zipPad:     CGFloat = 0
+  private let medPad:   CGFloat = 20
   
   var body: some View {
     NavigationView {
@@ -36,10 +35,10 @@ struct ListView: View {
           } // END: NAV-LINK
         } // END: FOR-EACH
       } // END: LIST
-      .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
+      .listRowInsets(EdgeInsets(top: zipPad, leading: medPad, bottom: zipPad, trailing: medPad))
       .listRowBackground(Color(bgColor))
       .listStyle(GroupedListStyle())
-      .environment(\.defaultMinListRowHeight, 40)
+      .environment(\.defaultMinListRowHeight, rowHgt)
       .onAppear(perform: appData.fetchData)
 
       // MARK: FOR FUTURE ENHANCEMENT
@@ -52,3 +51,9 @@ struct ListView: View {
 } // END: STRUCT
 
 
+
+struct ListView_Previews: PreviewProvider {
+  static var previews: some View {
+    ListView().environmentObject(AppData())
+  }
+}

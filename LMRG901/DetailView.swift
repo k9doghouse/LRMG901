@@ -12,20 +12,17 @@ import SwiftUI
 
 struct DetailView: View {
   let station: StationViewModel
-  let monoLight = "SFMono-Light.otf"
-  let lightFont = "Avenir Next Ultra Light"
-  let regrFont  = "Avenir Next Regular"
-  let condRegr  = "Avenir Next Condensed Regular"
-  let tungsten = "TungstenColor"
-  let padSml: CGFloat = 12.0
-  let padMed: CGFloat = 18.0
-  let padLrg: CGFloat = 40.0
-  let fntTny: CGFloat = 16.0
-  let fntSml: CGFloat = 18.0
-  let fntMed: CGFloat = 20.0
-  let fntBig: CGFloat = 30.0
-  let fntLrg: CGFloat = 40.0
-  let dimmer: Double  = 0.70
+
+  private let regrFont  = "Avenir Next Regular"
+  private let condRegr  = "Avenir Next Condensed Regular"
+
+  private let padMed: CGFloat = 18.0
+  private let padLrg: CGFloat = 40.0
+
+  private let fntSml: CGFloat = 18.0
+  private let fntMed: CGFloat = 20.0
+  private let fntBig: CGFloat = 30.0
+  private let fntLrg: CGFloat = 40.0
 
   var body: some View {
     VStack(alignment: .center) {
@@ -44,6 +41,7 @@ struct DetailView: View {
         .font(.custom(condRegr, fixedSize: fntBig))
         VStack {
           Text("\(Text(station.stationFlood))")
+            .padding(.bottom, 4)
           Text("Change from previous \(station.levelDelta)")
           Divider()
             .font(.custom(condRegr, size: fntSml))
