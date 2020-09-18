@@ -23,30 +23,30 @@ struct DetailView: View {
   let fntTny: CGFloat = 16.0
   let fntSml: CGFloat = 18.0
   let fntMed: CGFloat = 20.0
+  let fntBig: CGFloat = 30.0
   let fntLrg: CGFloat = 40.0
   let dimmer: Double  = 0.70
 
   var body: some View {
-    VStack(alignment: .leading, spacing: padSml) {
+    VStack(alignment: .center) {
       // 0
       Group {
+        HStack(alignment: .center) {
+          Spacer()
+          Text("\(station.stationName)"); Spacer()
+        } // END: HSTACK
+        .font(.custom(condRegr, size: fntLrg))
         HStack {
           Spacer()
-          Text(station.stationName.capitalized)
-          Text(station.stationFlood);Spacer()
+          Text("Today  \(station.levelZero)ft")
+          Spacer()
         } // END: HSTACK
-          .padding(.horizontal, padMed)
+        .font(.custom(condRegr, fixedSize: fntBig))
         VStack {
+          Text("\(Text(station.stationFlood))")
+          Text("Change from previous \(station.levelDelta)")
           Divider()
-          .opacity(dimmer)
-            .padding(.horizontal, padLrg)
-          Text("The River Gauge Was Observed @")
-            .font(.custom(condRegr, size: fntTny))
-          Text(station.obsDateTime)
-            .font(.custom(condRegr, size: fntMed))
-          Text("The change from yesterday is \(station.levelDelta)")
-            .font(.custom(condRegr, size: fntTny))
-          Divider()
+            .font(.custom(condRegr, size: fntSml))
             .padding(.horizontal, padLrg)
         } // END VSTACK
       } // END: GROUP 0
@@ -57,7 +57,7 @@ struct DetailView: View {
           Spacer()
           Text("Five Day Forecast")
             .fontWeight(.light)
-            .padding(.top, padSml)
+          //            .padding(.top, padSml)
           Spacer()
         } // END: VSTACK
       } // END: GROUP 1
@@ -92,17 +92,17 @@ struct DetailView: View {
           }
           Spacer()
         } // END: VSTACK
-          .font(.custom(condRegr, size: fntMed))
-          .padding(.horizontal, padMed+padLrg)
+        .font(.custom(condRegr, size: fntMed))
+        .padding(.horizontal, padMed+padLrg)
       } // END: GROUP 2
 
       // MARK: PUSH UP
       Spacer()
     } // END: VSTACK(main)
-      .font(.custom(regrFont, size: fntMed))
-      .minimumScaleFactor(0.5)
-      .lineLimit(1)
-      .padding()
-      .navigationBarTitle("Today \(station.levelZero)ft", displayMode: .inline)
+    .font(.custom(regrFont, size: fntMed))
+    .minimumScaleFactor(0.5)
+    .lineLimit(1)
+    .padding()
+    .navigationBarTitle("\(station.obsDateTime)", displayMode: .inline).lineLimit(1)
   } // END: BODY
 } // END: STRUCT

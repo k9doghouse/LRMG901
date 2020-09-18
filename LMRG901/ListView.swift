@@ -14,11 +14,13 @@ struct ListView: View {
   @EnvironmentObject var appData: AppData
   @State private var selectedLink: UUID? = nil
   
-  var monoLight = "SFMono-Light.otf"
-  var lightFont = "Avenir Next Ultra Light"
-  var regrFont  = "Avenir Next Regular"
-  var condLight = "Avenir Next Condensed Ultra Light"
-  var bgColor   = "BackgroundColor"
+  private let monoLight: String = "SFMono-Light.otf"
+  private let lightFont: String = "Avenir Next Ultra Light"
+  private let regrFont: String  = "Avenir Next Regular"
+  private let condLight: String = "Avenir Next Condensed Ultra Light"
+  private let bgColor : String  = "BackgroundColor"
+  private let fntSize:  CGFloat = 20
+  private let rowHgt:   CGFloat = 40
   
   var body: some View {
     NavigationView {
@@ -30,20 +32,21 @@ struct ListView: View {
               Spacer()
               Text(station.stationFlood)
             } // END HSTACK
+            .font(.custom(regrFont, size: fntSize))
           } // END: NAV-LINK
         } // END: FOR-EACH
       } // END: LIST
-        .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
-        .listRowBackground(Color(bgColor))
-        .listStyle(GroupedListStyle())
-        .environment(\.defaultMinListRowHeight, 32)
-        .onAppear(perform: appData.fetchData)
-        
-        // MARK: FOR FUTURE ENHANCEMENT
-        //        .onAppear(perform: appData.getObserved)
-        
-        .onAppear { UITableView.appearance().separatorStyle = .none }
-        .navigationBarTitle("Stations", displayMode: .large)
+      .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
+      .listRowBackground(Color(bgColor))
+      .listStyle(GroupedListStyle())
+      .environment(\.defaultMinListRowHeight, 40)
+      .onAppear(perform: appData.fetchData)
+
+      // MARK: FOR FUTURE ENHANCEMENT
+      //        .onAppear(perform: appData.getObserved)
+
+      .onAppear { UITableView.appearance().separatorStyle = .none }
+      .navigationBarTitle("Stations", displayMode: .large)
     } //END: NAV VIEW
   } // END: BODY
 } // END: STRUCT
