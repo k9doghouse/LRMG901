@@ -12,12 +12,16 @@ import UIKit
 import SwiftUI
 
 extension String {
-  var lines: [String] {
-    var result: [String] = []
-    enumerateLines { line, _ in result.append(line) }
-    return result
-  }
-} // END: EXTENSION
+  var lines1: [String] {
+    var result1: [String] = []
+    enumerateLines { line1, _ in result1.append(line1) }
+    return result1
+  } // END: VAR RESULT-1
+} // END: EXTENSION-1
+
+struct Entry: Codable {
+  var line1: String
+}
 
 // MARK: MODEL
 struct Station {
@@ -31,6 +35,11 @@ struct Station {
   var levelThree: String
   var levelFour: String
   var levelFive: String
+  var minusOne: String
+  var minusTwo: String
+  var minusThree: String
+  var minusFour: String
+  var minusFive: String
 }
 
 // MARK: VIEW MODEL
@@ -38,16 +47,21 @@ struct StationViewModel: Identifiable {
   var id = UUID()
   var station: Station
 
-  var stationName: String   { return station.stationName }
-  var stationFlood: String  { return station.stationFlood }
-  var obsDateTime: String   { return station.obsDateTime }
-  var levelZero: String     { return station.levelZero }
-  var levelDelta: String    { return station.levelDelta }
-  var levelOne: String      { return station.levelOne }
-  var levelTwo: String      { return station.levelTwo }
-  var levelThree: String    { return station.levelThree }
-  var levelFour: String     { return station.levelFour }
-  var levelFive: String     { return station.levelFive }
+  var stationName: String  { return station.stationName }
+  var stationFlood: String { return station.stationFlood }
+  var obsDateTime: String  { return station.obsDateTime }
+  var levelZero: String    { return station.levelZero }
+  var levelDelta: String   { return station.levelDelta }
+  var levelOne: String     { return station.levelOne }
+  var levelTwo: String     { return station.levelTwo }
+  var levelThree: String   { return station.levelThree }
+  var levelFour: String    { return station.levelFour }
+  var levelFive: String    { return station.levelFive }
+  var minusOne: String     { return station.minusOne }
+  var minusTwo: String     { return station.minusTwo }
+  var minusThree: String   { return station.minusThree }
+  var minusFour: String    { return station.minusFour }
+  var minusFive: String    { return station.minusFive }
 }
 
 // MARK: INTENTS - Get Data from web page; format, assemble, and write the data
@@ -58,8 +72,6 @@ class AppData: ObservableObject {
   private var spacesInt: Int = 0
 
   // MARK: NO API KEY REQUIRED
-  // MARK: FOR FUTURE ENHANCEMENTS
-  //  private  let observedURL: String = "https://water.weather.gov/ahps2/hydrograph_to_xml.php?gage=memt1&output=tabular&time_zone=cdt"
   private let riverURL: String = "https://forecast.weather.gov/product.php?site=NWS&issuedby=ORN&product=RVA&format=TXT&version=1&glossary=0"
 
   private var riverGauges: Array   = [[String]]()
@@ -76,36 +88,54 @@ class AppData: ObservableObject {
   private var levelThree = "3"
   private var levelFour  = "4"
   private var levelFive  = "5"
+  private var minusOne   = "-1"
+  private var minusTwo   = "-2"
+  private var minusThree = "-3"
+  private var minusFour  = "-4"
+  private var minusFive  = "-5"
 
   //MARK: TEMP VARS FOR CUSTOMIZING VALUES
   private var lines: [String] = []
   private var words: [String] = []
   private var timeOfObservation: String = ""
 
+  // MARK: VARS FOR FORECAST DATA
+  private var historyArray: [String] = []
+
   // MARK: VARS FOR STATION DATA ELEMENTS
-  private var zeroInt: Int  = 2
+  private var zeroInt:  Int = 2
   private var deltaInt: Int = 3
-  private var oneInt: Int   = 4
-  private var twoInt: Int   = 5
+  private var oneInt:   Int = 4
+  private var twoInt:   Int = 5
   private var threeInt: Int = 6
-  private var fourInt: Int  = 7
-  private var fiveInt: Int  = 8
+  private var fourInt:  Int = 7
+  private var fiveInt:  Int = 8
 
   // MARK: CONSTANTS MATCHING WEB PAGE RESULT
   private let stationArray: Array = ["CAPE GIRARDEAU", "NEW MADRID", "TIPTONVILLE", "CARUTHERSVILLE", "OSCEOLA",
-                             "MEMPHIS", "MHOON LANDING", "HELENA", "ARKANSAS CITY", "GREENVILLE",
-                             "VICKSBURG", "NATCHEZ", "RED RIVER LNDG", "BATON ROUGE", "DONALDSONVILLE", "RESERVE", "NEW ORLEANS"]
+                                     "MEMPHIS", "MHOON LANDING", "HELENA", "ARKANSAS CITY", "GREENVILLE",
+                                     "VICKSBURG", "NATCHEZ", "RED RIVER LNDG", "BATON ROUGE", "DONALDSONVILLE",
+                                     "RESERVE", "NEW ORLEANS"]
 
-  private let floodArray: Array = ["32", "34", "37", "32", "28", "34", "30", "44", "37", "48", "43", "48", "48", "35", "27", "22", "17"]
+  private let floodArray: Array = ["32", "34", "37", "32", "28", "34", "30", "44", "37",
+                                   "48", "43", "48", "48", "35", "27", "22", "17"]
   private let up: String   = "↑"
   private let down: String = "↓"
   
   // MARK: INTENT(S) Get Data from web page; format, assemble, and write the data
-  func fetchData() {
+  func fetchRivData() {
     if let url: URL = URL(string: riverURL) {
       do {
         let content: String = try String(contentsOf: url)
         let rivDat: String = String(content)
+
+        historyArray = fetchObsData(gauge: "memt1")
+
+        minusOne   = historyArray[0]
+        minusTwo   = historyArray[1]
+        minusThree = historyArray[2]
+        minusFour  = historyArray[3]
+        minusFive  = historyArray[4]
 
         // NOTE: regex for time the river gauge was observed: 0929AM, 1929PM, 2329PM
         let regex: NSRegularExpression = try NSRegularExpression(pattern: "(?:((0|1|2)(0|1|2|3|4|5|6|7|8|9)(0|1|2|3|4|5|6|7|8|9)(0|1|2|3|4|5|6|7|8|9)(A|P)M).*)")
@@ -187,7 +217,7 @@ class AppData: ObservableObject {
 
                 // MARK: GATHER DATA
                 self.stationName  = self.stationArray[indexInt]
-                self.stationFlood = "floods @ \(self.floodArray[indexInt])ft"
+                self.stationFlood = self.floodArray[indexInt]
                 self.obsDateTime  = self.timeOfObservation
                 self.levelOne     = String(firstWord[self.oneInt])
                 self.levelZero    = String(firstWord[self.zeroInt])
@@ -197,7 +227,7 @@ class AppData: ObservableObject {
                 self.levelDelta   = "\(String(firstWord[self.deltaInt]))ft "
 
                 // MARK: When observing station has an error
-                if firstWord[self.deltaInt]           == "MSG" { self.levelDelta = String("err ") }
+                if firstWord[self.deltaInt].contains("MSG") { self.levelDelta = String("err ") }
 
                 // MARK: add directional signs to the CHANGE/DELTA TextView
                 if firstWord[self.deltaInt].prefix(1) == "+"   { self.levelDelta = self.levelDelta.dropFirst() + self.up }
@@ -207,6 +237,8 @@ class AppData: ObservableObject {
                 self.levelThree   = String(firstWord[self.threeInt])
                 self.levelFour    = String(firstWord[self.fourInt])
                 self.levelFive    = String(firstWord[self.fiveInt])
+
+
 
                 // MARK: WRITE DATA TO APP-DATA IF < 17
                 if self.userData.count <= self.stationArray.count-1 {
@@ -219,7 +251,12 @@ class AppData: ObservableObject {
                                                                          levelTwo:     self.levelTwo,
                                                                          levelThree:   self.levelThree,
                                                                          levelFour:    self.levelFour,
-                                                                         levelFive:    self.levelFive)))
+                                                                         levelFive:    self.levelFive,
+                                                                         minusOne:     self.minusOne,
+                                                                         minusTwo:     self.minusTwo,
+                                                                         minusThree:   self.minusThree,
+                                                                         minusFour:    self.minusFour,
+                                                                         minusFive:    self.minusFive)))
                 } // END: IF(count)
               } // END: IF(line)
             } // END: FOR
@@ -228,5 +265,108 @@ class AppData: ObservableObject {
       } catch { print("\ncontents could not be loaded.\n") } // END: CATCH(do)
     } else { print("\nthe URL was bad!\n") }  // END: ELSE
   } // END: FUNC
+
+  // MARK: GET OBSERVED DATA FROM TABULAR WEB PAGE
+  func fetchObsData(gauge: String) -> [String] {
+
+    // <- - -  Constants and Variables  - - ->
+    let urlFirstPart: String  = "https://water.weather.gov/ahps2/hydrograph_to_xml.php?gage="
+    let urlLastPart:  String  = "&output=tabular&time_zone=cdt"
+
+    let urlGauges:   [String] = ["cpgm7", "nmdm7", "tptm7", "crtm7", "osga4","memt1", "mhom6",
+                                 "heea4", "arsa4", "geem6", "vckm6", "ntzm6", "rrll1", "btrl1",
+                                 "donl1", "rrvl1", "norl1"]
+
+    var urlGagePart:  String  = "memt1"
+
+    // Note: "https://water.weather.gov/ahps2/hydrograph_to_xml.php?gage=memt1&output=tabular&time_zone=cdt"
+    // TODO: FIX THIS TO BE DYNAMIC - HARDCODED FOR NOW
+    urlGagePart = urlGauges[5]
+    let observedURL: String = String("\(urlFirstPart + urlGagePart + urlLastPart)")
+
+    let start:  String = "<td nowrap>"
+    let kcfs:   String = "<td nowrap>-999kcfs</td>"
+    let dCDT:   String = "          <td nowrap>|Date(CDT)|</td>"
+    let begin:  String = "  <td nowrap>"
+    let stage:  String = "<td nowrap>|Stage|</td>"
+    let flow:   String = "<td nowrap>|--Flow-|</td>"
+    let oddStr: String = "this is to make the leve data an even index"
+    let day:    Int    = 24
+
+    var tempStr1:   String  = ""
+    var footStr:    String  = ""
+    var days:      [String] = []
+    var allLevels: [String] = []
+    var lines1:    [String] = []
+    var levels:    [String] = []
+
+    if let url1: URL = URL(string: observedURL) {
+      do {
+        let content1: String = try String(contentsOf: url1)
+        let obsDat: String = String(content1)
+
+        // MARK: SETUP
+        obsDat.enumerateLines { line1, _ in
+          if line1.contains(start)
+              && !line1.contains(kcfs)
+              && !line1.contains(dCDT)
+              && !line1.contains(stage)
+              && !line1.contains(flow) {
+            lines1.append(line1)
+          } // END: IF(start)
+        } // END: ENUMERATE(line1)
+
+        // MARK: MANIPULATE "LINES1" SO THAT "LEVELS" IS A MULTIPLE OF 2
+        lines1.insert(String(oddStr), at: 0)
+        // END: MANIPULATE (lines)  // END: SETUP
+
+        // MARK: LEVELS
+        allLevels = lines1.enumerated().compactMap { tuple in
+          tuple.offset.isMultiple(of: 2) ? tuple.element : nil
+        }
+
+        for (_,item1) in allLevels.enumerated() {
+          if item1 != oddStr {
+            if item1.contains(begin) {
+              tempStr1 = String(item1.dropFirst(13))
+              footStr =  String(tempStr1.dropLast(5))
+
+              // MARK: PAST LINE 120 GOES INTO THE FORECAST TABLE
+              if levels.count <= 119 {
+                levels.append(footStr)
+              } // END: IF
+            } // END: IF(item1.contains)
+          } // END: IF(item1 !=)
+        } // END: FOR(idx, item1)  // MARK: END(levels)
+
+        // MARK: MANIPULATE "LINES" BACK TO ORIGINAL CONFIGURATION
+        if lines1.first == oddStr {
+          lines1.removeFirst()
+        } // END: IF(lines.first == oddStr)
+        // MARK: END FIX(lines)
+
+        // MARK: BUILD ARRAY OF THE PAST 5 DAYS OF OBSERVATION(averaged)
+        var tempStr1:   String = ""
+        var tempDub:    Double = 0
+        var startIndex: Int    = 0
+
+        for n in 1...5 {
+          for idx1 in startIndex..<day*n {
+            tempStr1 = String(levels[idx1].dropLast(2))
+            tempDub += Double(tempStr1) ?? 0.0
+            tempStr1 = String(format: "%.1f", tempDub/24.0)
+          } // END: FOR(idx)
+          days.append(tempStr1)
+          startIndex += day
+          tempDub = 0
+        } // END: FOR(n)
+      } catch {
+        print("\ncontents could not be loaded.\n")
+      } // END: CATCH(do)
+    } else {
+      print("\nthe URL was bad!\n")
+    }  // END: ELSE
+    return days
+  }
 } // END: CLASS
 

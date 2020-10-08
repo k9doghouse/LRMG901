@@ -12,9 +12,9 @@
 		3D4F949D251250FD002154EC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D4F9498251250FD002154EC /* AppDelegate.swift */; };
 		3D4F949F251250FD002154EC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D4F949A251250FD002154EC /* LaunchScreen.storyboard */; };
 		3D4F94A7251256FF002154EC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3D4F94A4251256FF002154EC /* Assets.xcassets */; };
-		3D52E1AD251049F100915CAF /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D52E1AC251049F100915CAF /* DetailView.swift */; };
 		3D9BF2D62507B03B0035A214 /* AppData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9BF2D52507B03B0035A214 /* AppData.swift */; };
 		3D9BF2E82507B7AA0035A214 /* ListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9BF2E72507B7AA0035A214 /* ListView.swift */; };
+		3DFC1990252E523500A70838 /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DFC198F252E523500A70838 /* DetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,10 +24,10 @@
 		3D4F9498251250FD002154EC /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = LMRG901/AppDelegate.swift; sourceTree = SOURCE_ROOT; };
 		3D4F949A251250FD002154EC /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = LMRG901/LaunchScreen.storyboard; sourceTree = SOURCE_ROOT; };
 		3D4F94A4251256FF002154EC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		3D52E1AC251049F100915CAF /* DetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
 		3D9BF2CE2507B03B0035A214 /* LMRG901.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LMRG901.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D9BF2D52507B03B0035A214 /* AppData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppData.swift; sourceTree = "<group>"; };
 		3D9BF2E72507B7AA0035A214 /* ListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListView.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		3DFC198F252E523500A70838 /* DetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,7 +71,7 @@
 			children = (
 				3D9BF2D52507B03B0035A214 /* AppData.swift */,
 				3D9BF2E72507B7AA0035A214 /* ListView.swift */,
-				3D52E1AC251049F100915CAF /* DetailView.swift */,
+				3DFC198F252E523500A70838 /* DetailView.swift */,
 				3D4F94A4251256FF002154EC /* Assets.xcassets */,
 				3D4F9498251250FD002154EC /* AppDelegate.swift */,
 				3D4F9497251250FD002154EC /* SceneDelegate.swift */,
@@ -152,8 +152,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3D52E1AD251049F100915CAF /* DetailView.swift in Sources */,
 				3D9BF2E82507B7AA0035A214 /* ListView.swift in Sources */,
+				3DFC1990252E523500A70838 /* DetailView.swift in Sources */,
 				3D9BF2D62507B03B0035A214 /* AppData.swift in Sources */,
 				3D4F949D251250FD002154EC /* AppDelegate.swift in Sources */,
 				3D4F949C251250FD002154EC /* SceneDelegate.swift in Sources */,

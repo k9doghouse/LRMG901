@@ -1,5 +1,6 @@
 //
 //  https://github.com/k9doghouse/LRMG901.git
+//  greenish = Color(red: 103/255, green: 183/255, blue: 164/255)
 //
 //  DetailView.swift
 //  LMRG901
@@ -10,20 +11,21 @@
 
 import SwiftUI
 
+let blackish: String = "blackishColor"
+let greenish: String = "greenishColor"
+let bgColor:  String = "backgroundColor"
+
 struct DetailView: View {
   let station: StationViewModel
-
+  
   private let regrFont  = "Avenir Next Regular"
   private let condRegr  = "Avenir Next Condensed Regular"
-
-  private let padMed: CGFloat = 18.0
+  private let padSml: CGFloat = 12.0
+  private let padMed: CGFloat = 20.0
   private let padLrg: CGFloat = 40.0
-
-  private let fntSml: CGFloat = 18.0
   private let fntMed: CGFloat = 20.0
-  private let fntBig: CGFloat = 30.0
   private let fntLrg: CGFloat = 40.0
-
+  
   var body: some View {
     VStack(alignment: .center) {
       // 0
@@ -31,35 +33,32 @@ struct DetailView: View {
         HStack(alignment: .center) {
           Spacer()
           Text("\(station.stationName)"); Spacer()
-        } // END: HSTACK
+        }
         .font(.custom(condRegr, size: fntLrg))
         HStack {
           Spacer()
           Text("Today  \(station.levelZero)ft")
           Spacer()
-        } // END: HSTACK
-        .font(.custom(condRegr, fixedSize: fntBig))
+        }
+        .font(.custom(condRegr, size: fntMed))
         VStack {
-          Text("\(Text(station.stationFlood))")
-            .padding(.bottom, 4)
+          Text("Floods at \(station.stationFlood)ft")
+            .font(.custom(condRegr, size: fntMed))
           Text("Change from previous \(station.levelDelta)")
-          Divider()
-            .font(.custom(condRegr, size: fntSml))
+            .font(.custom(condRegr, size: fntMed))
             .padding(.horizontal, padLrg)
-        } // END VSTACK
-      } // END: GROUP 0
-
+            .padding(.bottom, padSml/2)
+        }
+      } // END: GROUP(0)
       // 1
       Group {
         HStack {
           Spacer()
           Text("Five Day Forecast")
             .fontWeight(.light)
-          //            .padding(.top, padSml)
           Spacer()
         } // END: VSTACK
-      } // END: GROUP 1
-
+      } // END: GROUP(1)
       // 2
       Group {
         VStack(alignment: .leading) {
@@ -88,19 +87,107 @@ struct DetailView: View {
             Text("\(station.levelFive)ft")
               .multilineTextAlignment(.trailing)
           }
-          Spacer()
         } // END: VSTACK
         .font(.custom(condRegr, size: fntMed))
         .padding(.horizontal, padMed+padLrg)
-      } // END: GROUP 2
-
-      // MARK: PUSH UP
-      Spacer()
+        .padding(.bottom, 4)
+      } // END: GROUP(2)
+      // 3
+      Group {
+        DrawChart(station: station)
+      } // END: GROUP(3)
+      Spacer() // MARK: PUSH UP
     } // END: VSTACK(main)
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
     .font(.custom(regrFont, size: fntMed))
     .minimumScaleFactor(0.5)
     .lineLimit(1)
     .padding()
     .navigationBarTitle("\(station.obsDateTime)", displayMode: .inline).lineLimit(1)
   } // END: BODY
-} // END: STRUCT
+} // END: STRUCT(detail view)
+
+  struct DrawChart: View {
+    let station: StationViewModel
+    let greenish: String = "greenishColor"
+
+    var body: some View {
+      ZStack {
+        Screen()
+        Box(station: station).fill(Color(greenish))
+      }
+    } // END: BODY
+  } // END: STRUCT(draw chart)
+
+  struct Screen: Shape {
+    func path(in rect: CGRect) -> Path {
+      var path = Path()
+
+      path.move(to: CGPoint(x: 0, y: 50))
+      path.addQuadCurve(to: CGPoint(x: 50, y: 0), control: CGPoint(x: 0, y: 0))
+      path.addLine(to: CGPoint(x: 300, y: 0))
+      path.addQuadCurve(to: CGPoint(x: 350, y: 50), control: CGPoint(x: 350, y: 0))
+      path.addLine(to: CGPoint(x: 350, y: 200))
+      path.addQuadCurve(to: CGPoint(x: 300, y: 250), control: CGPoint(x: 350, y: 250))
+      path.addLine(to: CGPoint(x: 50, y: 250))
+      path.addQuadCurve(to: CGPoint(x: 0, y: 200), control: CGPoint(x: 0, y: 250))
+      path.addLine(to: CGPoint(x: 0, y: 50))
+
+      let scale = (rect.width/350) * (9/10)
+      let xoffset = (rect.width * (1/10))/2
+      let yoffset = (rect.height - rect.height*scale) * (1/10)/2
+
+      return path
+        .applying(CGAffineTransform(scaleX: scale, y: scale))
+        .applying(CGAffineTransform(translationX: xoffset,  y: yoffset))
+    } // END: FUNC(path)
+  } // END: STRUCT(screen)
+
+  struct Box: Shape {
+    let station: StationViewModel
+    fileprivate let room = 28
+
+    func path(in rect: CGRect) -> Path {
+
+      let mFive  = Float(station.minusFive)?.rounded()  ?? 0
+      let mFour  = Float(station.minusFour)?.rounded()  ?? 0
+      let mThree = Float(station.minusThree)?.rounded() ?? 0
+      let mTwo   = Float(station.minusTwo)?.rounded()   ?? 0
+      let mOne   = Float(station.minusOne)?.rounded()   ?? 0
+      let lZero  = Float(station.levelZero)?.rounded()  ?? 0
+      let lOne   = Float(station.levelOne)?.rounded()   ?? 0
+      let lTwo   = Float(station.levelTwo)?.rounded()   ?? 0
+      let lThree = Float(station.levelThree)?.rounded() ?? 0
+      let lFour  = Float(station.levelFour)?.rounded()  ?? 0
+      let lFive  = Float(station.levelFive)?.rounded()  ?? 0
+
+      let levelArray = [mFive, mFour, mThree, mTwo, mOne, lZero, lOne, lTwo, lThree, lFour, lFive]
+      var path = Path()
+
+      for indx in 0..<levelArray.count {
+        path.addRoundedRect(in: CGRect(x: 20 + room*indx, y: 75, width: 22, height: Int(levelArray[indx])*2),
+                    cornerSize: CGSize(width: 3, height: 3))
+      } // END: FOR(indx)
+
+      let scale = (rect.width/340) * (9/10)
+      let xoffset = (rect.width * (1/11))/2
+      let yoffset = (rect.height - rect.height * scale) * (1/11)/2
+
+      return path
+        .applying(CGAffineTransform(scaleX: scale, y: scale))
+        .applying(CGAffineTransform(translationX: xoffset, y: yoffset))
+    } // END: FUNC(path)
+  } // END: STRUCT(box)
+
+
+
+
+
+//struct DetailView_Previews: PreviewProvider {
+//  let station: StationViewModel
+//
+//  static var previews: some View {
+//    DetailView(station: station).environment(\.colorScheme, .light)
+//    DetailView(station: station).environment(\.colorScheme, .dark)
+//  }
+//}
